@@ -1,44 +1,60 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useDropzone } from 'react-dropzone';
-
-
- export const Addimage = () => {
-  const imageStore = [];
+// import style from './add_image.module.css'
+let imageStore = [];
+console.log(imageStore)
+ export const Addimage = (props) => {
+  
   const [image, setImage] = useState([]);
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({
+  const {getRootProps,  getInputProps, isDragActive,} = useDropzone({
       accept: 'image/*',
       onDrop: (acceptedFiles) =>{
+        console.log(acceptedFiles);
         setImage(
-            acceptedFiles.map((upfile)=> Object.assign(upfile, {
-            preview: URL.createObjectURL(upfile)
-            })
-            )
+          [...image,
+          ...acceptedFiles.map((upfile)=> Object.assign(upfile, {
+              preview: URL.createObjectURL(upfile)
+              })
+              )
+            ]
         )
        
       }
 
 })
-useEffect(()=>{
-    imageStore = [{...(image.preview)}]
-},)
+imageStore = [...image]
+props.onImage(imageStore)
+console.log(imageStore.length);
+
+//  useEffect(()=>{
+    
+//  },)
+
   return (
-    <div>
-       <div {...getRootProps()}>
+    
+      
+      <div {...getRootProps()} >
         <input {... getInputProps()}/>
-       {isDragActive ? <p>Relase the files</p>: <p>Drag and drop the files.... </p> }
-       </div>
-       <div>
-        {imageStore.map((upfile)=>{
+       {isDragActive ? <span>Relase the files</span>: <span>Drag and drop the files.... </span> }
+      
+       {imageStore.map((upfile)=>{
             return (
-                <div>
-                    <img src={upfile.preview} style ={{width: "600px", height: '500px', border: "1px solid}"}}alt= 'preview'/>
-                </div>
+              
+                    <img src={upfile.preview} alt= 'preview'/>
+                
             )
         })}
-       </div>
        
-    </div>
+       </div>
+      
+  
     
   )
+
+
+// if(image.length === 0 || image.length === 1) {
+
+// }
+ 
 }
 
